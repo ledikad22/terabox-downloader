@@ -65,10 +65,13 @@
       const result = document.getElementById('result');
       result.innerText = '';
 
-      if (!link || !link.includes("terabox.com")) {
-        result.innerText = "❌ Please enter a valid TeraBox public link.";
-        return;
-      }
+      const isTeraBoxLink = /terabox(app)?\.com\/s\//.test(link);
+
+if (!link || !isTeraBoxLink) {
+  result.innerText = "❌ Please enter a valid TeraBox public link (e.g., https://terabox.com/s/...).";
+  return;
+}
+
 
       result.innerText = "🔄 Checking the link, please wait...";
 
