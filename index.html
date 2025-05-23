@@ -62,15 +62,16 @@
   <script>
     async function getDownloadLink() {
       const link = document.getElementById('linkInput').value.trim();
-      const result = document.getElementById('result');
-      result.innerText = '';
+const result = document.getElementById('result');
+result.innerText = '';
 
-      const isTeraBoxLink = /terabox(app)?\.com\/s\//.test(link);
+const validPattern = /^https:\/\/(www\.)?(terabox|teraboxapp)\.com\/s\/[\w-]+$/i;
 
-if (!link || !isTeraBoxLink) {
+if (!validPattern.test(link)) {
   result.innerText = "❌ Please enter a valid TeraBox public link (e.g., https://terabox.com/s/...).";
   return;
 }
+
 
 
       result.innerText = "🔄 Checking the link, please wait...";
