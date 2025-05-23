@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TeraBox Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    input, button {
+      width: 90%;
+      max-width: 400px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
+      text-align: center;
+    }
+    a {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>TeraBox Downloader</h1>
+
+  <input type="text" id="linkInput" placeholder="Paste your TeraBox public link here..." />
+  <button onclick="getDownloadLink()">Get Download Link</button>
+
+  <p id="result"></p>
+
+  <script>
+    async function getDownloadLink() {
+      const link = document.getElementById('linkInput').value.trim();
+      const result = document.getElementById('result');
+      result.innerText = '';
+
+      if (!link || !link.includes("terabox.com")) {
+        result.innerText = "❌ Please enter a valid TeraBox public link.";
+        return;
+      }
+
+      result.innerText = "🔄 Checking the link, please wait...";
+
+      try {
+        const response = await fetch(`https://api.dl.terabox.app/api/info?link=${encodeURIComponent(link)}`);
+        if (!response.ok) {
+          result.innerText = "❌ Could not connect to the API.";
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data && data.downloadUrl) {
+          result.innerHTML = `
+            <strong>File:</strong> ${data.filename || 'Unnamed'}<br>
+            <strong>Size:</strong> ${data.size || 'Unknown'}<br>
+            <strong>Type:</strong> ${data.filename ? data.filename.split('.').pop() : 'Unknown'}<br><br>
+            <a href="${data.downloadUrl}" target="_blank">⬇️ Download File</a>
+          `;
+        } else {
+          result.innerText = "❌ No downloadable file found.";
+        }
+      } catch (err) {
+        result.innerText = "❌ Error: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
