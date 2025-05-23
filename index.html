@@ -1,104 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TeraBox Downloader</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      margin-bottom: 10px;
-      color: #333;
-    }
-    input, button {
-      width: 90%;
-      max-width: 400px;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 16px;
-      color: #333;
-      text-align: center;
-    }
-    a {
-      color: green;
-      font-weight: bold;
-    }
-  </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraDL - Terabox File Downloader & Video Streaming</title>
+
+    <!-- CDN Style -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap">
+    <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Local Style -->
+    <link rel="icon" href="assets/icon.png" type="image/png">
+    <link rel="stylesheet" href="frontend/css/styles_global.css">
+    <link rel="stylesheet" href="frontend/css/styles_mobile.css">
+    <link rel="stylesheet" href="frontend/css/overlay_mobile.css">
+    <link rel="stylesheet" href="frontend/css/zoom_mobile.css">
+
+    <!-- Caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="description" content="Terabox File Downloader & Video Streaming">
+
+    <!-- Property -->
+    <meta property="og:title" content="TeraDL">
+    <meta property="og:description" content="Terabox File Downloader & Video Streaming">
+    <meta property="og:image" content="https://teradl.dapuntaratya.com/assets/icon.png">
+    <meta property="og:url" content="https://teradl.dapuntaratya.com/">
+    <meta property="og:type" content="website">
+
 </head>
+
 <body>
-  <h1>TeraBox Downloader</h1>
 
-  <input type="text" id="linkInput" placeholder="Paste your TeraBox public link here..." />
-  <button onclick="getDownloadLink()">Get Download Link</button>
+    <!-- Idle Main -->
 
-  <p id="result"></p>
+    <div class="full-container poppins">
 
-  <script>
-    async function getDownloadLink() {
-      const link = document.getElementById('linkInput').value.trim();
-const result = document.getElementById('result');
-result.innerText = '';
+        <span class="container-information-button">
+            <i id="information-button-open" class="fa-solid fa-circle-info"></i>
+        </span>
 
-const validPattern = /^https:\/\/(www\.)?(terabox|teraboxapp)\.com\/s\/[\w-]+$/i;
+        <span class="container-status-mode">
+            <span id="status-mode"></span>
+        </span>
+        
+        <div class="layer1-wrapper">
+    
+            <!-- Section Header -->
+            <div class="container-header">
+                <span class="title">TeraDL</span>
+                <span class="subtitle">Terabox File Downloader & Video Streaming</span>
+            </div>
 
-if (!validPattern.test(link)) {
-  result.innerText = "❌ Please enter a valid TeraBox public link (e.g., https://terabox.com/s/...).";
-  return;
-}
+            <!-- Section Input -->
+            <div class="container-input">
+                <input id="terabox_url" type="text" placeholder="Masukkan URL Terabox" autocomplete="off" autocapitalize="off" autofocus="off" autofill="off" spellcheck="false">
+                <button id="submit_button" type="button"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        
+        </div>
 
+        <!-- Section Stream Video -->
+        <div id="stream-video" class="stream-video-section inactive">
 
+        </div>
 
-      result.innerText = "🔄 Checking the link, please wait...";
+        <!-- Section Result -->
+        <div class="container-result">
+            <div id="result" class="box-result">                
+            </div>
+        </div>
 
-      try {
-        const response = await fetch(`https://api.dl.terabox.app/api/info?link=${encodeURIComponent(link)}`);
-        if (!response.ok) {
-          result.innerText = "❌ Could not connect to the API.";
-          return;
-        }
+    </div>
 
-        const data = await response.json();
+    <!-- Overlay Zoom Image -->
 
-        if (data && data.downloadUrl) {
-          result.innerHTML = `
-            <strong>File:</strong> ${data.filename || 'Unnamed'}<br>
-            <strong>Size:</strong> ${data.size || 'Unknown'}<br>
-            <strong>Type:</strong> ${data.filename ? data.filename.split('.').pop() : 'Unknown'}<br><br>
-            <a href="${data.downloadUrl}" target="_blank">⬇️ Download File</a>
-          `;
-        } else {
-          result.innerText = "❌ No downloadable file found.";
-        }
-      } catch (err) {
-        result.innerText = "❌ Error: " + err.message;
-      }
-    }
-  </script>
+    <div id="zoom-container" class="container-zoom-inactive poppins" onclick="unzoom();">
+    </div>
+
+    <!-- Overlay Information -->
+
+    <div id="information-container" class="container-overlay-inactive poppins">
+
+        <span class="container-information-button-active">
+            <i id="information-button-close" class="fa-solid fa-xmark"></i>
+        </span>
+
+        <div id="container-qna" class="container-qna">
+        </div>
+
+        <div id="container-contact" class="container-contact">
+        </div>
+
+        <div class="container-watermark">
+            <span id="app-version" class="watermark"></span>
+        </div>
+
+    </div>
+
+    <script src="frontend/javascript/style.js"></script>
+    <script src="frontend/javascript/script.js"></script>
+
 </body>
+
 </html>
+
+<!-- https://1024terabox.com/s/1eBHBOzcEI-VpUGA_xIcGQg -->
