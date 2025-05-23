@@ -1,111 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeraDL - Terabox File Downloader & Video Streaming</title>
-
-    <!-- CDN Style -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap">
-    <link rel="stylesheet" type='text/css' href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
-
-    <!-- Local Style -->
-    <link rel="icon" href="assets/icon.png" type="image/png">
-    <link rel="stylesheet" href="frontend/css/styles_global.css">
-    <link rel="stylesheet" href="frontend/css/styles_mobile.css">
-    <link rel="stylesheet" href="frontend/css/overlay_mobile.css">
-    <link rel="stylesheet" href="frontend/css/zoom_mobile.css">
-
-    <!-- Caching -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <meta name="description" content="Terabox File Downloader & Video Streaming">
-
-    <!-- Property -->
-    <meta property="og:title" content="TeraDL">
-    <meta property="og:description" content="Terabox File Downloader & Video Streaming">
-    <meta property="og:image" content="https://teradl.dapuntaratya.com/assets/icon.png">
-    <meta property="og:url" content="https://teradl.dapuntaratya.com/">
-    <meta property="og:type" content="website">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Terabox Downloader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .note {
+      font-size: 14px;
+      color: #777;
+      margin-top: 15px;
+    }
+  </style>
 </head>
-
 <body>
+  <h1>📥 Terabox Downloader</h1>
+  <form id="downloadForm">
+    <input
+      type="text"
+      id="linkInput"
+      placeholder="Paste your Terabox share link..."
+      required
+    />
+    <button type="submit">Download</button>
+  </form>
+  <p class="note">Only public Terabox links are supported.</p>
 
-    <!-- Idle Main -->
-
-    <div class="full-container poppins">
-
-        <span class="container-information-button">
-            <i id="information-button-open" class="fa-solid fa-circle-info"></i>
-        </span>
-
-        <span class="container-status-mode">
-            <span id="status-mode"></span>
-        </span>
-        
-        <div class="layer1-wrapper">
-    
-            <!-- Section Header -->
-            <div class="container-header">
-                <span class="title">TeraDL</span>
-                <span class="subtitle">Terabox File Downloader & Video Streaming</span>
-            </div>
-
-            <!-- Section Input -->
-            <div class="container-input">
-                <input id="terabox_url" type="text" placeholder="Masukkan URL Terabox" autocomplete="off" autocapitalize="off" autofocus="off" autofill="off" spellcheck="false">
-                <button id="submit_button" type="button"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-        
-        </div>
-
-        <!-- Section Stream Video -->
-        <div id="stream-video" class="stream-video-section inactive">
-
-        </div>
-
-        <!-- Section Result -->
-        <div class="container-result">
-            <div id="result" class="box-result">                
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Overlay Zoom Image -->
-
-    <div id="zoom-container" class="container-zoom-inactive poppins" onclick="unzoom();">
-    </div>
-
-    <!-- Overlay Information -->
-
-    <div id="information-container" class="container-overlay-inactive poppins">
-
-        <span class="container-information-button-active">
-            <i id="information-button-close" class="fa-solid fa-xmark"></i>
-        </span>
-
-        <div id="container-qna" class="container-qna">
-        </div>
-
-        <div id="container-contact" class="container-contact">
-        </div>
-
-        <div class="container-watermark">
-            <span id="app-version" class="watermark"></span>
-        </div>
-
-    </div>
-
-    <script src="frontend/javascript/style.js"></script>
-    <script src="frontend/javascript/script.js"></script>
-
+  <script>
+    const form = document.getElementById("downloadForm");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const link = document.getElementById("linkInput").value.trim();
+      if (!link.includes("terabox")) {
+        alert("Please enter a valid Terabox link.");
+        return;
+      }
+      window.location.href = `/download?url=${encodeURIComponent(link)}`;
+    });
+  </script>
 </body>
-
 </html>
-
-<!-- https://1024terabox.com/s/1eBHBOzcEI-VpUGA_xIcGQg -->
