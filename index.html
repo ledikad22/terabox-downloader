@@ -3,65 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Terabox Downloader</title>
+  <title>TeraBox Downloader</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d6efd" />
+
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      padding: 20px;
+      padding: 2rem;
+      background: #f8f9fa;
       text-align: center;
     }
-    input[type="text"] {
-      width: 90%;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .note {
-      font-size: 14px;
-      color: #777;
+    #result video {
       margin-top: 15px;
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>📥 Terabox Downloader</h1>
-  <form id="downloadForm">
-    <input
-      type="text"
-      id="linkInput"
-      placeholder="Paste your Terabox share link..."
-      required
-    />
-    <button type="submit">Download</button>
-  </form>
-  <p class="note">Only public Terabox links are supported.</p>
+
+  <div class="container">
+    <h1 class="mb-4">📥 TeraBox Downloader</h1>
+
+    <div class="mb-3">
+      <input
+        type="text"
+        id="linkInput"
+        class="form-control"
+        placeholder="Paste TeraBox share link (https://terabox.com/s/...)"
+        autofocus
+      />
+    </div>
+
+    <div class="mb-3">
+      <input
+        type="text"
+        id="passwordInput"
+        class="form-control"
+        placeholder="Password (if required)"
+      />
+    </div>
+
+    <button onclick="getDownloadLink()" class="btn btn-primary mb-3">
+      Generate Download Link
+    </button>
+
+    <div id="result" class="mt-3"></div>
+  </div>
 
   <script>
-    const form = document.getElementById("downloadForm");
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
+    function isValidTeraBoxURL(url) {
+      return /^https?:\/\/(www\.)?terabox\.com\/s\/[\w\d]+/.test(url);
+    }
+
+    async function getDownloadLink() {
       const link = document.getElementById("linkInput").value.trim();
-      if (!link.includes("terabox")) {
-        alert("Please enter a valid Terabox link.");
+      const pwd = document.getElementById("passwordInput").value.trim();
+      const result = document.getElementById("result");
+      result.innerHTML = "";
+
+      if (!isValidTeraBoxURL(link)) {
+        result.innerHTML = `<p class="text-danger fw-bold">❌ Invalid TeraBox link.</p>`;
         return;
       }
-      window.location.href = `/download?url=${encodeURIComponent(link)}`;
-    });
+
+      result.innerHTML = `<p>⏳ Fetching download link...</p>`;
+
+      try {
+        const res = await fetch(
+          `https://pika-terabox-dl.vercel.app/?url=${encodeURIComponent(link)}${pwd ? "&pwd=" + encodeURIComponent(pwd) : ""}`
+        );
+        const data = await res.json();
+
+        if (data.ok) {
+          const isVideo = data.filename.match(/\.(mp4|mov|webm|ogg|avi)$/i);
+          result.innerHTML = `
+            <p><strong>${data.filename}</strong> (${data.size || "Size unknown"})</p>
+            ${isVideo ? `<video controls src="${data.downloadLink}"></video>` : ""}
+            <br />
+            <a href="${data.downloadLink}" download class="btn btn-success mt-3">
+              ⬇️ Download
+            </a>
+          `;
+        } else if (data.message && data.message.toLowerCase().includes("password")) {
+          result.innerHTML = `<p class="text-warning fw-bold">⚠️ Password protected link or wrong password.</p>`;
+        } else {
+          result.innerHTML = `<p class="text-danger fw-bold">❌ Failed to retrieve download link.</p>`;
+        }
+      } catch (error) {
+        result.innerHTML = `<p class="text-danger fw-bold">❌ Error fetching data. Please try again.</p>`;
+      }
+    }
+
+    // PWA service worker registration
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js").catch(console.error);
+    }
   </script>
+
 </body>
 </html>
