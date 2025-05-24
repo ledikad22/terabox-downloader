@@ -58,8 +58,10 @@
   </div>
 
   <script>
+    // Updated regex to accept terabox links with optional query params
     function isValidTeraBoxURL(url) {
-      return /^https?:\/\/(www\.)?terabox\.com\/s\/[\w\d]+/.test(url);
+      const regex = /^https?:\/\/(www\.)?terabox\.com\/s\/[a-zA-Z0-9]+(\?.*)?$/;
+      return regex.test(url.trim());
     }
 
     async function getDownloadLink() {
