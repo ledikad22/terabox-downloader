@@ -36,7 +36,7 @@
         type="text"
         id="linkInput"
         class="form-control"
-        placeholder="Paste TeraBox share link (https://terabox.com/s/...)"
+        placeholder="Paste TeraBox share link (https://terabox.com/s/... or https://teraboxlink.com/s/...)"
         autofocus
       />
     </div>
@@ -58,9 +58,9 @@
   </div>
 
   <script>
-    // Updated regex to accept terabox links with optional query params
+    // Updated regex to accept terabox.com and teraboxlink.com with dashes and underscores
     function isValidTeraBoxURL(url) {
-      const regex = /^https?:\/\/(www\.)?terabox\.com\/s\/[a-zA-Z0-9]+(\?.*)?$/;
+      const regex = /^https?:\/\/(www\.)?(terabox\.com|teraboxlink\.com)\/s\/[a-zA-Z0-9-_]+(\?.*)?$/;
       return regex.test(url.trim());
     }
 
