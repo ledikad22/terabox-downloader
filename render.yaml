@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: terabox-downloader
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn main:app
-    plan: free
-    region: oregon
